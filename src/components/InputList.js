@@ -18,6 +18,7 @@ import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
 import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
 
+
 import {useState} from "react";
 
 
@@ -40,6 +41,9 @@ const InputList=(props)=>{
     const [taskTime,setTaskTime]=useState(0);
     const [taskCategory, setTaskCategory]=useState('');
 
+    /*
+     @ see https://github.com/UMSI579/todo/blob/step19/src/components/InputGroup.js
+     */
     const AddTask=()=>{
         console.log(taskName,taskTime,taskDescription,taskCategory)
         if(taskName && taskTime){
@@ -53,6 +57,7 @@ const InputList=(props)=>{
                     },
                     ...previousList
                 ]
+                localStorage.setItem('task-list',JSON.stringify(updatedList))
                 return updatedList;
             })
         }
@@ -61,9 +66,12 @@ const InputList=(props)=>{
         setTaskDescription('')
         setTaskCategory('');
         setTaskTime(0)
-
     }
-
+    const keyDownHandler = (e) => {
+        if (e.key === 'Enter') {
+            AddTask()
+        }
+    }
 
     return (
 
@@ -87,6 +95,7 @@ const InputList=(props)=>{
                             sx={{opacity: isOpen ? 1 : 0 ,m: 3}}
                             value={taskDescription}
                             onChange={(e)=>setTaskDescription(e.target.value)}
+                            onKeyDown={keyDownHandler}
                         />
                     </ListItem>
                     <ListItem>
@@ -102,7 +111,7 @@ const InputList=(props)=>{
                                 <MenuItem value="">
                                     <em>None</em>
                                 </MenuItem>
-                                <MenuItem value="study">Study</MenuItem>
+                                <MenuItem value="study">Study </MenuItem>
                                 <MenuItem value="work">Work</MenuItem>
                                 <MenuItem value="sports">Sports</MenuItem>
                                 <MenuItem value="others">Others</MenuItem>

@@ -13,20 +13,20 @@ const Item = styled(Paper)(({ theme }) => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
 }));
-const SubItem = styled(Paper)(({ theme }) => ({
-    // backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    // padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
+const SubItem = styled("div")(({ theme }) => ({
+    color: 'darkslategray',
+    backgroundColor: 'aliceblue',
+    padding: 8,
+    borderRadius: 4,
 }));
+
 
 const TodoList=(props)=>{
     const { name, description, category, timetodo,remove}=props;
     return(
-        <Item key={name}>
 
-            <div>
+        <Item key={name}>
+            <div style={{display:"flex",flexDirection:"row"}}>
                 <div>{name}</div>
                 <Stack
                     direction="row"
