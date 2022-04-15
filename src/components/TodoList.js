@@ -6,14 +6,17 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Divider from '@mui/material/Divider';
 
-const Item = styled(Paper)(({ theme }) => ({
+import {toTomato} from "../utils";
+
+export const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
     // padding: theme.spacing(1),
     textAlign: 'center',
     color: theme.palette.text.secondary,
+    minWidth:"400px"
 }));
-const SubItem = styled("div")(({ theme }) => ({
+export const SubItem = styled("div")(({ theme }) => ({
     color: 'darkslategray',
     backgroundColor: 'aliceblue',
     padding: 8,
@@ -22,11 +25,10 @@ const SubItem = styled("div")(({ theme }) => ({
 
 
 const TodoList=(props)=>{
-    const { name, description, category, timetodo,remove}=props;
+    const { name, description, category, timetodo,remove,index}=props;
     return(
 
-        <Item key={name}>
-            <div style={{display:"flex",flexDirection:"row"}}>
+            <Item key={index}>
                 <div>{name}</div>
                 <Stack
                     direction="row"
@@ -34,14 +36,17 @@ const TodoList=(props)=>{
                     spacing={3}
                     sx={{display:"flex",justifyContent:"center"}}
                 >
-                    <SubItem>{timetodo}</SubItem>
+
                     <SubItem>{category}</SubItem>
+                    <SubItem>{toTomato(timetodo)}</SubItem>
                     <SubItem>{description}</SubItem>
                 </Stack>
-                <button onClick={remove}>Done</button>
-            </div>
 
-        </Item>
+                <button onClick={remove} style={{marginRight:"20px"}} >Done</button>
+
+            </Item>
+
+
     )
 }
 
