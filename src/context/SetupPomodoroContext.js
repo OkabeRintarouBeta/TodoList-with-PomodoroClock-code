@@ -38,6 +38,7 @@ const SetupContextProvider = (props) => {
             active: activeType
         })
         setTime(executing) //reset the promodoro value depending on the active state
+        console.log("executing: " + executing.active)
         pauseTimer()
     }
 
@@ -61,7 +62,7 @@ const SetupContextProvider = (props) => {
         }
     }
 
-    const showTimeText = ({ remainingTime }) => {
+    const children = ({ remainingTime }) => {
         const minutes = Math.floor(remainingTime / 60)
         const seconds = remainingTime % 60
 
@@ -77,7 +78,7 @@ const SetupContextProvider = (props) => {
                 settingsButton,
                 updateTimer,
                 setCurrentTimer,
-                showTimeText,
+                children,
                 startAnimation,
                 pomodoro,
                 executing,

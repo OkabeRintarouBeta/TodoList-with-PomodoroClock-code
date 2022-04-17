@@ -45,8 +45,11 @@ const Settings = () => {
     }
 
     const updateTimerHandler = (e) => {
-        e.prventDefault() //prevent refresh the browser when the user submit the settings.
+        console.log("我在update timer")
+       // e.prventDefault() //prevent refresh the browser when the user submit the settings.
+        console.log("我在update timer")
         updateTimer(newTimer)
+        console.log("我在update timer")
     }
 
     return(
@@ -54,7 +57,7 @@ const Settings = () => {
             <form noValidate>
                 <div className="input-container">
                         <label>Work time (min)</label>
-                        <input className="input" name="work" onChange={handleChange} value={newTimer.work} title="hi"/>
+                        <input className="input" name="work" onChange={handleChange} value={newTimer.work}/>
                         <label>Short Break (min)</label>
                         <input className="input" name="short" onChange={handleChange} value={newTimer.short} />
                         <label>Long Break (min)</label>

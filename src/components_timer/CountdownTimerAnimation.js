@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { SetupPomodoroContext } from "../context/SetupPomodoroContext";
 
@@ -9,9 +9,10 @@ import { SetupPomodoroContext } from "../context/SetupPomodoroContext";
     children: text content in the center
 */}
 
-const CountdownTimerAnimation = ({ keys, timerDuration, startAnimate, timeText}) => {
+const CountdownTimerAnimation = ({ keys, timerDuration, startAnimate, children}) => {
     const { resetTimer } = useContext(SetupPomodoroContext) //import the stopTimer in SettingContext
-    
+    console.log("keys: " + keys)
+    console.log("timerDuration" + timerDuration)
     return (
         <CountdownCircleTimer
             key={keys}
@@ -25,7 +26,7 @@ const CountdownTimerAnimation = ({ keys, timerDuration, startAnimate, timeText})
                 resetTimer();
             }}
         >   
-            {timeText}
+            {children}
         </CountdownCircleTimer>
         
     )

@@ -125,7 +125,7 @@ function App() {
     const [timeLeft,setTimeLeft]=useState(0);
     const [taskDone,setTaskDone]=useState(defaultFinishedTasks);
 
-    {/*pomodoro context*/}
+    //------------Pomodoro Context-----------------------
     const { 
         startTimer,
         pauseTimer,
@@ -133,14 +133,15 @@ function App() {
         settingsButton,
         updateTimer,
         setCurrentTimer,
-        showTimeText,
+        children,
         startAnimation,
         pomodoro,
         executing,
         newTimerKey
       } = useContext(SetupPomodoroContext)
-      useEffect(()=>{updateTimer(executing)}, [executing, startAnimation])
-    {/**************/}
+
+       useEffect(()=>{updateTimer(executing)}, [executing, startAnimation])
+    //----------------------------------------------------
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -319,7 +320,7 @@ function App() {
                             task={nextTask}
                             timeRemain={timeLeft}
                         />
-                        <button style={{width:"50px",visibility:nextTask==''?"hidden":"visible"}}
+                        <button style={{width:"50px",visibility:nextTask===''?"hidden":"visible"}}
                             onClick={()=>{
                                 setTaskDone((previousList)=>{
                                     const updatedList= [nextTask,...previousList];
@@ -366,47 +367,49 @@ function App() {
             </Stack>
             
             
-            <Divider orientation='vertical' flexItem='true'/>
+            <Divider orientation='vertical' flexItem={true}/>
             <Box 
                 component="main"
                 className='pomodoro' sx={{display:'flex',width:'50%', margin:'64px 64px'}}> 
                 {/* 64px is the same height as the tool bar */}
                 <div>
                     <h3>Pomodoro</h3>
-                    {pomodoro !== 0 ?
                     <>
-                        <ul className="pomodoro-button">
-                            <li>
-                                <PomodoroButton 
-                                    title="Work"
-                                    activeClass={executing.active === "work" ? "active-button" : undefined}
-                                    _callback={() => {
-                                        setCurrentTimer('work')
-                                        resetTimer()
-                                    }}
-                                />
-                            </li>
-                            <li>
-                                <PomodoroButton 
-                                    title="Short Break"
-                                    activeClass={executing.active === "short" ? "active-button" : undefined}
-                                    _callback={() => {
-                                        setCurrentTimer('short')
-                                        resetTimer()
-                                    }}
-                                />
-                            </li>
-                            <li>
-                                <PomodoroButton 
-                                    title="Long Break"
-                                    activeClass={executing.active === "long" ? "active-button" : undefined}
-                                    _callback={() => {
-                                        setCurrentTimer('long')
-                                        resetTimer()
-                                    }}
-                                />
-                            </li>
-                        </ul>
+                        <div>
+                            <ul className="pomodoro-button">
+                                <li>
+                                    <PomodoroButton 
+                                        title="Work"
+                                        activeClass={executing.active === "work" ? "active-button" : undefined}
+                                        _callback={() => {
+                                            setCurrentTimer("work")
+                                            resetTimer()
+                                        }}
+                                    />
+                                </li>
+                                <li>
+                                    <PomodoroButton 
+                                        title="Short Break"
+                                        activeClass={executing.active === "short" ? "active-button" : undefined}
+                                        _callback={() => {
+                                            setCurrentTimer("short")
+                                            resetTimer()
+                                        }}
+                                    />
+                                </li>
+                                <li>
+                                    <PomodoroButton 
+                                        title="Long Break"
+                                        activeClass={executing.active === "long" ? "active-button" : undefined}
+                                        _callback={() => {
+                                            setCurrentTimer("long")
+                                            resetTimer()
+                                        }}
+                                    />
+                                </li>
+                            </ul>
+                        </div>
+                        
 
                         <PomodoroButton title="Settings" _callback={settingsButton} />
 
@@ -416,7 +419,7 @@ function App() {
                                 timerDuration={pomodoro}
                                 startAnimate={startAnimation}
                             >
-                                {showTimeText}
+                                {children}
                             </CountdownTimerAnimation>
                         </div> 
 
@@ -432,15 +435,16 @@ function App() {
                                 _callback={pauseTimer}
                             />
                             <PomodoroButton
-                                title="Stop"
+                                title="Reset"
                                 className={!startAnimation ? 'active' : undefined}
                                 _callback={resetTimer}
                             />
                         </div>
+                        
+                        <Settings /> 
+                    </>                  
                     
-                    </> : <Settings />                   
-                    
-                    } 
+                     
                 </div>
                 
             </Box>
