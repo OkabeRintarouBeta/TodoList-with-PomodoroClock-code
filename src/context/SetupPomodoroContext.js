@@ -1,20 +1,27 @@
-import { createContext,useEffect,useState } from "react";
+import { createContext,useContext,useEffect,useState } from "react";
 
 export const SetupPomodoroContext = createContext()
 
 const SetupContextProvider = (props) => {
 
+    // const [ pomodoro, setPomodoro ] = useState(0); 
+    // const [ executing, setExecuting ] = useState({});
+    // const [ startAnimation, setStartAnimation ] = useState(false);
+    // const [ newTimerKey, setNewTimerKey ] =useState(0);
+
+    //default
+    
+    const initState = {
+        work: 25, //set initial time of work - 25min
+        short: 5, //set initial time of short break - 5min
+        long: 30, //set initial time of long break - 30min
+        active: 'work' //set 
+    }
     const [ pomodoro, setPomodoro ] = useState(0); 
-    const [ executing, setExecuting ] = useState({});
+    const [ executing, setExecuting ] = useState(initState);
     const [ startAnimation, setStartAnimation ] = useState(false);
     const [ newTimerKey, setNewTimerKey ] =useState(0);
     
-    useEffect(() => {
-        setPomodoro(0)
-        setExecuting({work: 25, short: 5, long: 30, active: "work"})
-        setStartAnimation(false)
-        setNewTimerKey(0)
-    }, [])
 
     const startTimer = () => {
         setStartAnimation(true)
@@ -29,10 +36,6 @@ const SetupContextProvider = (props) => {
         pauseTimer() //pause the animation when the clock is refreshed
     }
 
-    const settingsButton = () => {
-        setExecuting({})
-        setPomodoro(0); //reset the pomodoro timer
-    }
 
     const updateTimer = (newTimer) => {
         setExecuting(newTimer) //object, "newTimer" from SetPomodoro
@@ -82,17 +85,22 @@ const SetupContextProvider = (props) => {
                 startTimer,
                 pauseTimer,
                 resetTimer,
-                settingsButton,
                 updateTimer,
                 setCurrentTimer,
                 children,
                 startAnimation,
                 pomodoro,
                 executing,
-                newTimerKey
+                newTimerKey,
+
+                // setTime,
+                // setCurrentTimer,
+                // setExecuting,
+                // setPomodoro
             }}
         >
             {props.children}
+            {/* <Content /> */}
         </SetupPomodoroContext.Provider>
     )
 }

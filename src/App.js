@@ -33,6 +33,7 @@ import { SetupPomodoroContext } from "./context/SetupPomodoroContext"
 import PomodoroButton from './components_timer/PomodoroButton';
 import CountdownTimerAnimation from './components_timer/CountdownTimerAnimation';
 
+
 import {useContext, useEffect, useState} from "react";
 
 const drawerWidth = 300;
@@ -130,7 +131,6 @@ function App() {
         startTimer,
         pauseTimer,
         resetTimer,
-        settingsButton,
         updateTimer,
         setCurrentTimer,
         children,
@@ -140,7 +140,7 @@ function App() {
         newTimerKey
       } = useContext(SetupPomodoroContext)
 
-       useEffect(()=>{updateTimer(executing)}, [executing, startAnimation])
+        useEffect(()=>{updateTimer(executing)}, [executing, startAnimation])
     //----------------------------------------------------
 
     const handleDrawerOpen = () => {
@@ -381,7 +381,7 @@ function App() {
                                     <PomodoroButton 
                                         title="Work"
                                         activeClass={executing.active === "work" ? "active-button" : undefined}
-                                        _callback={() => {
+                                        _callback={(e) => {
                                             setCurrentTimer("work")
                                             resetTimer()
                                         }}
@@ -410,8 +410,6 @@ function App() {
                             </ul>
                         </div>
                         
-
-                        <PomodoroButton title="Settings" _callback={settingsButton} />
 
                         <div className='pomodoro-timer-container'>
                             <CountdownTimerAnimation 
