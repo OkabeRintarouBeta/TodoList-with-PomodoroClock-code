@@ -1,4 +1,4 @@
-import { createContext,useState } from "react";
+import { createContext,useEffect,useState } from "react";
 
 export const SetupPomodoroContext = createContext()
 
@@ -9,6 +9,13 @@ const SetupContextProvider = (props) => {
     const [ startAnimation, setStartAnimation ] = useState(false);
     const [ newTimerKey, setNewTimerKey ] =useState(0);
     
+    useEffect(() => {
+        setPomodoro(0)
+        setExecuting({work: 25, short: 5, long: 30, active: "work"})
+        setStartAnimation(false)
+        setNewTimerKey(0)
+    }, [])
+
     const startTimer = () => {
         setStartAnimation(true)
     }
