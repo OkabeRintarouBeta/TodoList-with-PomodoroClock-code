@@ -18,6 +18,8 @@ import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
 import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
 
+import { useContext } from "react";
+import { SetupPomodoroContext } from "../context/SetupPomodoroContext";
 
 import {useState} from "react";
 
@@ -41,6 +43,7 @@ const InputList=(props)=>{
     const [taskTime,setTaskTime]=useState(0);
     const [taskCategory, setTaskCategory]=useState('');
 
+    const { executing } = useContext(SetupPomodoroContext)
     /*
      @ see https://github.com/UMSI579/todo/blob/step19/src/components/InputGroup.js
      */
@@ -129,7 +132,7 @@ const InputList=(props)=>{
                             }}
 
                         >
-                            <Typography component="legend">Set Time(25 per clock)</Typography>
+                            <Typography component="legend">Set Time({executing.work} per clock)</Typography>
                             <StyledRating
                                 name="customized-color"
                                 defaultValue={1}
@@ -144,7 +147,7 @@ const InputList=(props)=>{
                                 }
                             />
 
-                            <span>  {taskTime*25} minutes</span>
+                            <span>  {taskTime*executing.work} minutes</span>
                         </Box>
 
                     </ListItem>

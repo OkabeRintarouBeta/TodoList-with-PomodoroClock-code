@@ -11,8 +11,8 @@ import { SetupPomodoroContext } from "../context/SetupPomodoroContext";
 
 const CountdownTimerAnimation = ({ keys, timerDuration, startAnimate, children}) => {
     const { resetTimer } = useContext(SetupPomodoroContext) //import the stopTimer in SettingContext
-    console.log("keys: " + keys)
-    console.log("timerDuration" + timerDuration)
+    // console.log("keys: " + keys)
+    // console.log("timerDuration" + timerDuration)
     return (
         <CountdownCircleTimer
             key={keys}

@@ -1,4 +1,4 @@
-import { createContext,useContext,useEffect,useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const SetupPomodoroContext = createContext()
 
@@ -21,6 +21,7 @@ const SetupContextProvider = (props) => {
     const [ executing, setExecuting ] = useState(initState);
     const [ startAnimation, setStartAnimation ] = useState(false);
     const [ newTimerKey, setNewTimerKey ] =useState(0);
+    const [ usedTime, setUsedTime ] = useState(0);
     
 
     const startTimer = () => {
@@ -72,10 +73,27 @@ const SetupContextProvider = (props) => {
         }
     }
 
+    const usedTimeHandler = (min, sec) => {
+        if(executing.active === "work"){
+            const usedSeconds = executing.work * 60 - (min * 60 + sec)
+            //console.log("我在context: " + props.children)
+            // console.log("remaining time: " + usedSeconds);
+            setUsedTime(usedSeconds);
+            // useEffect(()=>{setUsedTime(usedSeconds)},[usedSeconds])
+            return `${usedSeconds}`
+        }
+        return 0
+    }
+
     const children = ({ remainingTime }) => {
+        
         const minutes = Math.floor(remainingTime / 60)
         const seconds = remainingTime % 60
-
+        //console.log(usedTime)
+        setTimeout(()=>{
+            usedTimeHandler(minutes, seconds);
+        }, 0)
+    //    usedTimeHandler(minutes, seconds);
         return `${minutes} : ${seconds}`
     }
 
@@ -92,7 +110,8 @@ const SetupContextProvider = (props) => {
                 pomodoro,
                 executing,
                 newTimerKey,
-
+                usedTime,
+                usedTimeHandler
                 // setTime,
                 // setCurrentTimer,
                 // setExecuting,
@@ -100,7 +119,6 @@ const SetupContextProvider = (props) => {
             }}
         >
             {props.children}
-            {/* <Content /> */}
         </SetupPomodoroContext.Provider>
     )
 }

@@ -125,6 +125,8 @@ function App() {
     const [nextTask,setNextTask]=useState(defaultCurrentTask);
     const [timeLeft,setTimeLeft]=useState(0);
     const [taskDone,setTaskDone]=useState(defaultFinishedTasks);
+    const [ showTimeRemain, setShowTimeRemain ] = useState(timeLeft);
+    const [ doingTask, setDoingTask ] = useState(false)
 
     //------------Pomodoro Context-----------------------
     const { 
@@ -137,10 +139,22 @@ function App() {
         startAnimation,
         pomodoro,
         executing,
-        newTimerKey
+        newTimerKey,
+        usedTime //secounds
       } = useContext(SetupPomodoroContext)
 
-        useEffect(()=>{updateTimer(executing)}, [executing, startAnimation])
+    useEffect(()=>{updateTimer(executing)}, [executing, startAnimation])
+    
+    const handleUsedTime = () => {
+        console.log("usedTime: " + usedTime);
+        console.log("timeLeft: " + timeLeft);
+        const remainingTimeTodo = Math.floor(timeLeft * executing.work - usedTime / 60)
+
+        console.log("reamainingTime: " + remainingTimeTodo)
+        setShowTimeRemain(remainingTimeTodo)
+        // setTimeLeft(remainingTimeTodo)
+    }
+    useEffect(()=>{handleUsedTime()}, [usedTime])
     //----------------------------------------------------
 
     const handleDrawerOpen = () => {
@@ -319,7 +333,21 @@ function App() {
                         <TaskNow
                             task={nextTask}
                             timeRemain={timeLeft}
+                            showTimeRemain={showTimeRemain}
+                            isDoingTask={doingTask}
                         />
+                        {/*/------------------Pomodoro start------------------*/}
+                        <button style={{width:"50px",visibility:nextTask===''?"hidden":"visible"}}
+                            onClick={()=>{
+                                startTimer();
+                                setDoingTask(true);
+                                handleUsedTime();
+                                // setUsedPomodoroTime(usedTimeHandler);
+                                // console.log("我在app: " + usedPomodoroTime )
+                                // console.log("usedTimeHandler: " + {usedTimeHandler})
+                            }}
+                        >Start</button>
+                        {/*/------------------Pomodoro start------------------*/}
                         <button style={{width:"50px",visibility:nextTask===''?"hidden":"visible"}}
                             onClick={()=>{
                                 setTaskDone((previousList)=>{
