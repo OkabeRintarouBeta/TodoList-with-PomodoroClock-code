@@ -127,7 +127,6 @@ function App() {
     const [taskDone,setTaskDone]=useState(defaultFinishedTasks);
     const [ showTimeRemain, setShowTimeRemain ] = useState(timeLeft);
     const [ doingTask, setDoingTask ] = useState(false)
-    const [cycleComplete,setCycleComplete]=useState(false);
 
     //------------Pomodoro Context-----------------------
     const { 
@@ -141,21 +140,49 @@ function App() {
         pomodoro,
         executing,
         newTimerKey,
-        usedTime //secounds
+        usedTime, //secounds
+        finishCycle, // finish one clock flag
+        setFinishCycle,
+        startTimerTodoList
       } = useContext(SetupPomodoroContext)
 
     useEffect(()=>{updateTimer(executing)}, [executing, startAnimation])
     
     const handleUsedTime = () => {
-        console.log("usedTime: " + usedTime);
-        console.log("timeLeft: " + timeLeft);
-        const remainingTimeTodo = Math.floor(timeLeft * executing.work - usedTime / 60)
+        // console.log("usedTime: " + usedTime); //seconds
+        // console.log("timeLeft tomato num : " + timeLeft); 
+        // console.log("finishCycle in App.js: " + finishCycle)
 
-        console.log("reamainingTime: " + remainingTimeTodo)
+        const remainingTimeTodo = Math.floor(timeLeft* executing.work - usedTime / 60)
         setShowTimeRemain(remainingTimeTodo)
-        // setTimeLeft(remainingTimeTodo)
     }
     useEffect(()=>{handleUsedTime()}, [usedTime])
+
+    useEffect(()=>{
+        if(finishCycle){
+            setFinishCycle(false)
+            setTimeLeft(timeLeft - 1)
+            console.log("useEffect -- finishCycle: " + finishCycle)
+            console.log("useEffect -- timeLeft: " + timeLeft)
+        }
+    },[finishCycle])
+
+    useEffect(()=> {
+    if(finishCycle && timeLeft === 1 && nextTask){
+        console.log("useEffect -- finishCycle 2: " + finishCycle)
+        console.log("useEffect -- timeLeft 2: " + timeLeft)
+        setDoingTask(false);
+        setFinishCycle(false)
+        setNextTask('');
+        // removeTask(nextTask.name,2);
+        setTaskDone((previousList)=>{
+            const updatedList= [nextTask,...previousList];
+            localStorage.setItem('finished-task-list',JSON.stringify(updatedList))
+            localStorage.setItem('current-task','')
+            return updatedList;
+        })
+    }
+    },[finishCycle])
     //----------------------------------------------------
 
     const handleDrawerOpen = () => {
@@ -285,19 +312,24 @@ function App() {
         })
     }
 
-    useEffect(()=>{
-        if(timeLeft===0 && cycleComplete===true && nextTask){
-            console.log("aaa");
-            setNextTask('');
-            // removeTask(nextTask.name,2);
-            setTaskDone((previousList)=>{
-                const updatedList= [nextTask,...previousList];
-                localStorage.setItem('finished-task-list',JSON.stringify(updatedList))
-                localStorage.setItem('current-task','')
-                return updatedList;
-            })
-        }
-    },[cycleComplete])
+    // useEffect(()=>{
+    //     if(timeLeft != 0 && finishCycle && !nextTask){ // the task isn't finish, but run a cycle
+
+    //     }
+
+    //     else if(timeLeft===0 && nextTask){ 
+    //         console.log("aaa");
+    //         setDoingTask(false);
+    //         setNextTask('');
+    //         // removeTask(nextTask.name,2);
+    //         setTaskDone((previousList)=>{
+    //             const updatedList= [nextTask,...previousList];
+    //             localStorage.setItem('finished-task-list',JSON.stringify(updatedList))
+    //             localStorage.setItem('current-task','')
+    //             return updatedList;
+    //         })
+    //     }
+    // },[isD])
 
 
   return (
@@ -348,25 +380,24 @@ function App() {
                             timeRemain={timeLeft}
                             showTimeRemain={showTimeRemain}
                             isDoingTask={doingTask}
+                            spentTime={usedTime}
                         />
                         {/*/------------------Pomodoro start------------------*/}
                         <button style={{width:"50px",visibility:nextTask===''?"hidden":"visible"}}
                             onClick={()=>{
-                                startTimer();
-                                setDoingTask(true);
-                                handleUsedTime();
-                                setTimeLeft(timeLeft-1);
-                                setShowTimeRemain(timeLeft);
-                                setCycleComplete(false);
-                                // setUsedPomodoroTime(usedTimeHandler);
-                                // console.log("我在app: " + usedPomodoroTime )
-                                // console.log("usedTimeHandler: " + {usedTimeHandler})
+                                if(!doingTask){ //default: false
+                                    setTimeLeft(timeLeft)
+                                    setDoingTask(true);
+                                } 
+                                startTimerTodoList();
+                                handleUsedTime();                               
                             }}
                         >Start</button>
                         {/*/------------------Pomodoro start------------------*/}
                         <button style={{width:"50px",visibility:nextTask===''?"hidden":"visible"}}
                             onClick={()=>{
                                 resetTimer();
+                                setDoingTask(false);
                                 setTaskDone((previousList)=>{
                                     const updatedList= [nextTask,...previousList];
                                     localStorage.setItem('finished-task-list',JSON.stringify(updatedList))
@@ -461,7 +492,6 @@ function App() {
                                 keys={newTimerKey}
                                 timerDuration={pomodoro}
                                 startAnimate={startAnimation}
-                                setFinishCycle={setCycleComplete}
                             >
                                 {children}
                             </CountdownTimerAnimation>

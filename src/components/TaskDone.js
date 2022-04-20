@@ -1,10 +1,13 @@
+import { useContext } from 'react';
 import {Item,SubItem} from './TodoList'
-
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
 import {toTomato} from "../utils";
+import { SetupPomodoroContext } from "../context/SetupPomodoroContext";
 
 const TaskDone=(props)=>{
+    const { executing } = useContext(SetupPomodoroContext)
+
     const {taskDone,dropTask}=props;
     return(
 
@@ -18,7 +21,7 @@ const TaskDone=(props)=>{
         >
 
             <SubItem>{taskDone.category}</SubItem>
-            <SubItem>{taskDone.time*25} min</SubItem>
+            <SubItem>{taskDone.totalTime} min</SubItem>
             <SubItem>{taskDone.description}</SubItem>
         </Stack>
 

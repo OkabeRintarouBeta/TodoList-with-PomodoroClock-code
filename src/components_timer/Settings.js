@@ -61,9 +61,6 @@ const Settings = () => {
         updateTimer(newTimer)
     }
 
-    const defaultTimerHandler = () => {
-        setNewTimer(initState)
-    }
 
     return(
         <div className="setting-container">
@@ -77,7 +74,6 @@ const Settings = () => {
                         <input className="input" name="long" onChange={handleChange} defaultValue={newTimer.long} />
                 </div> 
                 <PomodoroButton title="Set Timer" _callback={updateTimerHandler} />
-                <PomodoroButton title="Use Default" _callback={defaultTimerHandler} />
             </form>
         </div>
     )
