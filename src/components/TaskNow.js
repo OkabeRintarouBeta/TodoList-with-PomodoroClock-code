@@ -37,7 +37,8 @@ const TaskNow=(props)=>{
                     <SubItem>{toTomato(timeRemain)}</SubItem>
                     <SubItem>{task.description}</SubItem>
                     <div>Time Left: {
-                        isDoingTask ? showTimeRemain : timeRemain*executing.work 
+                        timeRemain*executing.work
+                        // isDoingTask ? showTimeRemain : timeRemain*executing.work
                     } minutes</div>
                 </Stack>
             </Item>

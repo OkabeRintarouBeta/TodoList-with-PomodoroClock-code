@@ -127,6 +127,7 @@ function App() {
     const [taskDone,setTaskDone]=useState(defaultFinishedTasks);
     const [ showTimeRemain, setShowTimeRemain ] = useState(timeLeft);
     const [ doingTask, setDoingTask ] = useState(false)
+    const [cycleComplete,setCycleComplete]=useState(false);
 
     //------------Pomodoro Context-----------------------
     const { 
@@ -284,7 +285,19 @@ function App() {
         })
     }
 
-
+    useEffect(()=>{
+        if(timeLeft===0 && cycleComplete===true && nextTask){
+            console.log("aaa");
+            setNextTask('');
+            // removeTask(nextTask.name,2);
+            setTaskDone((previousList)=>{
+                const updatedList= [nextTask,...previousList];
+                localStorage.setItem('finished-task-list',JSON.stringify(updatedList))
+                localStorage.setItem('current-task','')
+                return updatedList;
+            })
+        }
+    },[cycleComplete])
 
 
   return (
@@ -342,6 +355,9 @@ function App() {
                                 startTimer();
                                 setDoingTask(true);
                                 handleUsedTime();
+                                setTimeLeft(timeLeft-1);
+                                setShowTimeRemain(timeLeft);
+                                setCycleComplete(false);
                                 // setUsedPomodoroTime(usedTimeHandler);
                                 // console.log("我在app: " + usedPomodoroTime )
                                 // console.log("usedTimeHandler: " + {usedTimeHandler})
@@ -350,6 +366,7 @@ function App() {
                         {/*/------------------Pomodoro start------------------*/}
                         <button style={{width:"50px",visibility:nextTask===''?"hidden":"visible"}}
                             onClick={()=>{
+                                resetTimer();
                                 setTaskDone((previousList)=>{
                                     const updatedList= [nextTask,...previousList];
                                     localStorage.setItem('finished-task-list',JSON.stringify(updatedList))
@@ -444,6 +461,7 @@ function App() {
                                 keys={newTimerKey}
                                 timerDuration={pomodoro}
                                 startAnimate={startAnimation}
+                                setFinishCycle={setCycleComplete}
                             >
                                 {children}
                             </CountdownTimerAnimation>
