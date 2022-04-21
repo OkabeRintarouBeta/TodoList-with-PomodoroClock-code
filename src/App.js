@@ -209,11 +209,11 @@ function App() {
         }
         // console.log(items)
         if (order==='asc'){
-            groupBy(items,'time',"asc");
+            groupBy(items,'totalTime',"asc");
 
         }
         else if (order==='desc'){
-            groupBy(items,'time',"desc");
+            groupBy(items,'totalTime',"desc");
         }
 
 
@@ -251,11 +251,11 @@ function App() {
             )
         }
         if (order==='asc'){
-            groupBy(items,'time',"asc");
+            groupBy(items,'totalTime',"asc");
 
         }
         else if (order==='desc'){
-            groupBy(items,'time',"desc");
+            groupBy(items,'totalTime',"desc");
         }
         // console.log(items);
         return items.map((item,idx) =>
