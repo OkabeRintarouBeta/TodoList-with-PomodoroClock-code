@@ -126,8 +126,8 @@ function App() {
     const [timeLeft,setTimeLeft]=useState(0);
     const [taskDone,setTaskDone]=useState(defaultFinishedTasks);
     const [ showTimeRemain, setShowTimeRemain ] = useState(timeLeft);
-    const [ doingTask, setDoingTask ] = useState(false)
-
+    const [ doingTask, setDoingTask ] = useState(false);
+    const [ disabled, setDisabled ] = useState(false);
 
 
     //------------Pomodoro Context-----------------------
@@ -149,7 +149,9 @@ function App() {
       } = useContext(SetupPomodoroContext)
 
     useEffect(()=>{updateTimer(executing)}, [executing, startAnimation])
-    
+    //----------------------------------------------------
+
+    //---------Update left time when a task start---------
     const handleUsedTime = () => {
         // console.log("usedTime: " + usedTime); //seconds
         // console.log("timeLeft tomato num : " + timeLeft); 
@@ -176,7 +178,6 @@ function App() {
         setDoingTask(false);
         setFinishCycle(false)
         setNextTask('');
-        // removeTask(nextTask.name,2);
         setTaskDone((previousList)=>{
             const updatedList= [nextTask,...previousList];
             localStorage.setItem('finished-task-list',JSON.stringify(updatedList))
@@ -186,6 +187,27 @@ function App() {
     }
     },[finishCycle])
     //----------------------------------------------------
+
+    //----Disable Pomodoro Settings when a task is running----]
+    const Disabled = ({ disabled, children }) => {
+        console.log("disabled: " + disabled)
+        if (disabled) {
+            return (
+              <div style={{ opacity: 0.5, pointerEvents: "none" }} disabled>
+                {children}
+              </div>
+            );
+        } else {
+            return (
+                <div style={{ opacity: 1 }} disabled>
+                  {children}
+                </div>
+              );
+        }
+    }
+
+    //--------------------------------------------------------
+
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -322,25 +344,6 @@ function App() {
         })
     }
 
-    // useEffect(()=>{
-    //     if(timeLeft != 0 && finishCycle && !nextTask){ // the task isn't finish, but run a cycle
-
-    //     }
-
-    //     else if(timeLeft===0 && nextTask){ 
-    //         console.log("aaa");
-    //         setDoingTask(false);
-    //         setNextTask('');
-    //         // removeTask(nextTask.name,2);
-    //         setTaskDone((previousList)=>{
-    //             const updatedList= [nextTask,...previousList];
-    //             localStorage.setItem('finished-task-list',JSON.stringify(updatedList))
-    //             localStorage.setItem('current-task','')
-    //             return updatedList;
-    //         })
-    //     }
-    // },[isD])
-
 
   return (
     <div className="App">
@@ -398,7 +401,8 @@ function App() {
                                     setDoingTask(true);
                                 } 
                                 startTimerTodoList();
-                                handleUsedTime();                               
+                                handleUsedTime();
+                                setDisabled(true); //when start a task, disable settings
                             }}
                         >Start</button>
                         {/*/------------------Pomodoro start------------------*/}
@@ -503,26 +507,27 @@ function App() {
                                 {children}
                             </CountdownTimerAnimation>
                         </div> 
-
-                        <div className='buttons-wrapper'>
-                            <PomodoroButton
-                                title="Start"
-                                className={!startAnimation ? 'active' : undefined}
-                                _callback={startTimer}
-                            />
-                            <PomodoroButton
-                                title="Pause"
-                                className={!startAnimation ? 'active' : undefined}
-                                _callback={pauseTimer}
-                            />
-                            <PomodoroButton
-                                title="Reset"
-                                className={!startAnimation ? 'active' : undefined}
-                                _callback={resetTimer}
-                            />
-                        </div>
-                        
-                        <Settings /> 
+                        <Disabled disabled={disabled}>
+                            <div className='buttons-wrapper'>
+                                <PomodoroButton
+                                    title="Start"
+                                    className={!startAnimation ? 'active' : undefined}
+                                    _callback={startTimer}
+                                />
+                                <PomodoroButton
+                                    title="Pause"
+                                    className={!startAnimation ? 'active' : undefined}
+                                    _callback={pauseTimer}
+                                />
+                                <PomodoroButton
+                                    title="Reset"
+                                    className={!startAnimation ? 'active' : undefined}
+                                    _callback={resetTimer}
+                                />
+                            </div>
+                            
+                            <Settings /> 
+                        </Disabled>
                     </>                  
                     
                      

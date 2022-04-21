@@ -14,12 +14,8 @@ const Settings = () => {
         active: 'work' //set 
     }
     
-    const [ newTimer, setNewTimer ] = useState(initState
-        // work: 25, //set initial time of work - 25min
-        // short: 5, //set initial time of short break - 5min
-        // long: 30, //set initial time of long break - 30min
-        // active: 'work' //set 
-    )
+    const [ newTimer, setNewTimer ] = useState(initState)
+
     const { updateTimer } = useContext(SetupPomodoroContext)
 
 
@@ -61,10 +57,6 @@ const Settings = () => {
         updateTimer(newTimer)
     }
 
-    const defaultTimerHandler = () => {
-        setNewTimer(initState)
-    }
-
     return(
         <div className="setting-container">
             <form noValidate>
@@ -77,7 +69,6 @@ const Settings = () => {
                         <input className="input" name="long" onChange={handleChange} defaultValue={newTimer.long} />
                 </div> 
                 <PomodoroButton title="Set Timer" _callback={updateTimerHandler} />
-                <PomodoroButton title="Use Default" _callback={defaultTimerHandler} />
             </form>
         </div>
     )

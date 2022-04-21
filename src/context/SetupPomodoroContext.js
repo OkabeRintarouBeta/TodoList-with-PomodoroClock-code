@@ -39,7 +39,7 @@ const SetupContextProvider = (props) => {
 
     const resetTimer = () => {
         setFinishCycle(true)
-        console.log("In Context: finish Cycle: " + finishCycle)
+        // console.log("In Context: finish Cycle: " + finishCycle)
         setNewTimerKey(newTimerKey + 1)
         pauseTimer() //pause the animation when the clock is refreshed
     }
