@@ -9,10 +9,8 @@ import { SetupPomodoroContext } from "../context/SetupPomodoroContext";
 
 
 const TaskNow=(props)=>{
-    const { task, timeRemain, showTimeRemain, isDoingTask}=props;
-    //total tomato is the number of the initial setting given by the user
-    //if the user choose 5 tomatos when adding a task, then totalTomato = 5;
-    const { executing,finishCycle } = useContext(SetupPomodoroContext)
+    const {task,timeRemain,showTimeRemain, isDoingTask}=props;
+    const { executing } = useContext(SetupPomodoroContext)
 
     // const totalTime=task.time;
     // console.log(timeRemain)
@@ -36,12 +34,11 @@ const TaskNow=(props)=>{
                     sx={{display:"flex",justifyContent:"center"}}
                 >
                     <SubItem>{task.category}</SubItem>
-                    <SubItem>{toTomato(timeRemain)}</SubItem>
+                    <SubItem>{toTomato(timeRemain+1)}</SubItem>
                     <SubItem>{task.description}</SubItem>
                     <div>Time Left: {
                         // timeRemain*executing.work
-                        isDoingTask && !finishCycle ? showTimeRemain : timeRemain*executing.work
-
+                        isDoingTask ? showTimeRemain : timeRemain*executing.work
                     } minutes</div>
                 </Stack>
             </Item>

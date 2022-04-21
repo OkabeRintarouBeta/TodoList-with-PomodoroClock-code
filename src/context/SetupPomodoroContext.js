@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const SetupPomodoroContext = createContext()
 
@@ -22,13 +22,8 @@ const SetupContextProvider = (props) => {
     const [ startAnimation, setStartAnimation ] = useState(false);
     const [ newTimerKey, setNewTimerKey ] =useState(0);
     const [ usedTime, setUsedTime ] = useState(0);
-    const [ finishCycle, setFinishCycle ] = useState(false);
+    
 
-
-    const startTimerTodoList = () => {
-        setFinishCycle(false)
-        setStartAnimation(true)
-    }
     const startTimer = () => {
         setStartAnimation(true)
     }
@@ -38,11 +33,10 @@ const SetupContextProvider = (props) => {
     }
 
     const resetTimer = () => {
-        setFinishCycle(true)
-        console.log("In Context: finish Cycle: " + finishCycle)
         setNewTimerKey(newTimerKey + 1)
         pauseTimer() //pause the animation when the clock is refreshed
     }
+
 
     const updateTimer = (newTimer) => {
         setExecuting(newTimer) //object, "newTimer" from SetPomodoro
@@ -82,21 +76,24 @@ const SetupContextProvider = (props) => {
     const usedTimeHandler = (min, sec) => {
         if(executing.active === "work"){
             const usedSeconds = executing.work * 60 - (min * 60 + sec)
-            // console.log("used seconds in Context: " + usedSeconds + " s");
+            //console.log("我在context: " + props.children)
+            // console.log("remaining time: " + usedSeconds);
             setUsedTime(usedSeconds);
-
+            // useEffect(()=>{setUsedTime(usedSeconds)},[usedSeconds])
             return `${usedSeconds}`
         }
         return 0
     }
 
-    const children = ({ remainingTime }) => {   
+    const children = ({ remainingTime }) => {
+        
         const minutes = Math.floor(remainingTime / 60)
         const seconds = remainingTime % 60
         //console.log(usedTime)
         setTimeout(()=>{
             usedTimeHandler(minutes, seconds);
         }, 0)
+    //    usedTimeHandler(minutes, seconds);
         return `${minutes} : ${seconds}`
     }
 
@@ -114,11 +111,7 @@ const SetupContextProvider = (props) => {
                 executing,
                 newTimerKey,
                 usedTime,
-                usedTimeHandler,
-                
-                finishCycle,
-                setFinishCycle,
-                startTimerTodoList
+                usedTimeHandler
                 // setTime,
                 // setCurrentTimer,
                 // setExecuting,
