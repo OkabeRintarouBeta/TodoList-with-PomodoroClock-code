@@ -143,7 +143,7 @@ const InputList=(props)=>{
                                 defaultValue={1}
                                 max={6}
                                 value={taskTime}
-                                onChange={(event, newTaskTime) => {
+                                onChange={(newTaskTime) => {
                                     setTaskTime(newTaskTime);
                                 }}
                                 getLabelText={(value) => `${value} Heart${value !== 1 ? 's' : ''}`}

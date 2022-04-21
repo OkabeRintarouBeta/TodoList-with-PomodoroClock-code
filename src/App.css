@@ -76,6 +76,10 @@ button:active{
 
 }
 
+.button-under-text{
+  margin: 8px 0;
+}
+
 .pomodoro-button-item button{
   margin:5px 5px;
   width: 110px;

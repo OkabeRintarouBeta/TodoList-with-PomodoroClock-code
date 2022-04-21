@@ -25,7 +25,7 @@ const TaskDone=(props)=>{
             <SubItem>{taskDone.description}</SubItem>
         </Stack>
 
-        <button onClick={dropTask} style={{marginRight:"20px"}} >Delete</button>
+        <button className="button-under-text" onClick={dropTask} style={{marginRight:"20px"}} >Delete</button>
 
     </Item>
     )

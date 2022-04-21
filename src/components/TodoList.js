@@ -16,7 +16,8 @@ export const Item = styled(Paper)(({ theme }) => ({
     justifyContent:"center",
     textAlign: 'center',
     color: theme.palette.text.secondary,
-    minWidth:"470px"
+    minWidth:"470px",
+    marginBottom: "15px"
 }));
 export const SubItem = styled("div")(({ theme }) => ({
     color: 'darkslategray',
@@ -26,8 +27,8 @@ export const SubItem = styled("div")(({ theme }) => ({
     // width:"100%",
     width:"90px",
     wordWrap: "break-word",
-    maxHeight:"60px",
-    overflow:"scroll",
+    maxHeight:"70px",
+    // overflow:"scroll",
     marginLeft:"15px",
 
 }));
@@ -51,7 +52,7 @@ const TodoList=(props)=>{
                     <SubItem>{description}</SubItem>
                 </Stack>
 
-                <button onClick={remove} style={{marginRight:"20px"}} >Done</button>
+                <button className="button-under-text" onClick={remove} style={{marginRight:"20px"}} >Done</button>
 
             </Item>
 
