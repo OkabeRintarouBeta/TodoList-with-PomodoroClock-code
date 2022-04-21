@@ -128,6 +128,9 @@ function App() {
     const [ showTimeRemain, setShowTimeRemain ] = useState(timeLeft);
     const [ doingTask, setDoingTask ] = useState(false);
     const [ disabled, setDisabled ] = useState(false);
+    const [ disabledNoTask, setDisabledNoTask ] = useState(false);
+    const [ pauseFlag, setPauseFlag ] = useState(false)
+    const [ puaseFlagNotTask, setPuaseFlagNotTask ] = useState(false)
 
 
     //------------Pomodoro Context-----------------------
@@ -168,6 +171,7 @@ function App() {
             setTimeLeft(timeLeft - 1)
             // console.log("useEffect -- finishCycle: " + finishCycle)
             // console.log("useEffect -- timeLeft: " + timeLeft)
+            setDisabled(false)
         }
     },[finishCycle])
 
@@ -188,22 +192,22 @@ function App() {
     },[finishCycle])
     //----------------------------------------------------
 
-    //----Disable Pomodoro Settings when a task is running----]
+    //----Disable Pomodoro Settings when a task is running----
     const Disabled = ({ disabled, children }) => {
-        console.log("disabled: " + disabled)
+        // console.log("disabled: " + disabled)
         if (disabled) {
             return (
-              <div style={{ opacity: 0.5, pointerEvents: "none" }} disabled>
+              <div style={{ opacity: 0.3, pointerEvents: "none" }} disabled>
                 {children}
               </div>
             );
-        } else {
+        } else{
             return (
-                <div style={{ opacity: 1 }} disabled>
+                <div style={{ opacity:1 }} disabled>
                   {children}
                 </div>
               );
-        }
+        } 
     }
 
     //--------------------------------------------------------
@@ -394,7 +398,12 @@ function App() {
                             spentTime={usedTime}
                         />
                         {/*/------------------Pomodoro start------------------*/}
-                        <button className="setting-button primary" style={{visibility:nextTask===''?"hidden":"visible"}}
+                        <button className="setting-button primary" 
+                            style={{
+                                visibility:nextTask===''?"hidden":"visible", 
+                                opacity: disabled ? 0.3 : 1, 
+                                pointerEvents: disabled ? "none" : "auto"
+                            }}
                             onClick={()=>{
                                 if(!doingTask){ //default: false
                                     setTimeLeft(timeLeft)
@@ -405,8 +414,31 @@ function App() {
                                 setDisabled(true); //when start a task, disable settings
                             }}
                         >Start</button>
-                        {/*/------------------Pomodoro start------------------*/}
-                        <button className="setting-button secondary" style={{width:"50px",visibility:nextTask===''?"hidden":"visible"}}
+                    
+                        {/*/-------------------------------------------------*/}
+
+                        {/*/------------------Pomodoro Pause Task------------------*/}
+                        <button className="setting-button primary" 
+                                style={{
+                                    width:"80px",
+                                    visibility:nextTask===''?"hidden":"visible",
+                                    opacity: disabled ? 1 : 0.3, 
+                                    pointerEvents: disabled ? "auto" : "none"
+                                }}
+                            onClick={()=>{
+                                // console.log("pauseflag: " + pauseFlag)
+                                if(pauseFlag){
+                                    startTimer()
+                                    setPauseFlag(false)
+                                } else {
+                                    pauseTimer();
+                                    setPauseFlag(true)
+                                }
+                            }}
+                        > {pauseFlag ? "Continue" : "Pause"}</button>
+                        {/*/-------------------------------------------------------*/}
+
+                        <button className="setting-button secondary" style={{width:"60px",visibility:nextTask===''?"hidden":"visible"}}
                             onClick={()=>{
                                 resetTimer();
                                 setDoingTask(false);
@@ -416,8 +448,9 @@ function App() {
                                     localStorage.setItem('current-task','')
                                     return updatedList;
                                 })
-
+                                
                                 setNextTask('');
+                                setDisabled(false);
                             }}
                         >Finish Ahead</button>
                     </div>
@@ -462,40 +495,43 @@ function App() {
                 <div className='pomodoro-container'>
                     <h3>Pomodoro</h3>
                     <>
-                        <div>
+                        <Disabled disabled={disabled}>
                             <div className="pomodoro-button" >
-                                <div className="pomodoro-button-item">
+                                <div className={executing.active === "work" ? "pomodoro-button-item-acitve" : "pomodoro-button-item"}>
                                     <PomodoroButton 
                                         title="Work"
-                                        activeClass={executing.active === "work" ? "active-button" : undefined}
                                         _callback={(e) => {
                                             setCurrentTimer("work")
                                             resetTimer()
+                                            setDisabledNoTask(false)
+                                            setPuaseFlagNotTask(false)
                                         }}
                                     />
                                 </div>
-                                <div className="pomodoro-button-item">
+                                <div className={executing.active === "short" ? "pomodoro-button-item-acitve" : "pomodoro-button-item"}>
                                     <PomodoroButton 
                                         title="Short Break"
-                                        activeClass={executing.active === "short" ? "active-button" : undefined}
                                         _callback={() => {
                                             setCurrentTimer("short")
                                             resetTimer()
+                                            setDisabledNoTask(false)
+                                            setPuaseFlagNotTask(false)
                                         }}
                                     />
                                 </div>
-                                <div className="pomodoro-button-item">
+                                <div className={executing.active === "long" ? "pomodoro-button-item-acitve" : "pomodoro-button-item"}>
                                     <PomodoroButton 
                                         title="Long Break"
-                                        activeClass={executing.active === "long" ? "active-button" : undefined}
                                         _callback={() => {
                                             setCurrentTimer("long")
                                             resetTimer()
+                                            setDisabledNoTask(false)
+                                            setPuaseFlagNotTask(false)
                                         }}
                                     />
                                 </div>
                             </div>
-                        </div>
+                        </Disabled>
                         
 
                         <div className='pomodoro-timer-container'>
@@ -508,26 +544,41 @@ function App() {
                             </CountdownTimerAnimation>
                         </div> 
                         <Disabled disabled={disabled}>
+
                             <div className='buttons-wrapper'>
-                                <PomodoroButton
-                                    title="Start"
-                                    className={!startAnimation ? 'active' : undefined}
-                                    _callback={startTimer}
-                                />
+                                <button className="setting-button primary"
+                                    style={{
+                                        opacity: puaseFlagNotTask ? 0.3 : 1, 
+                                        pointerEvents: puaseFlagNotTask ? "none" : "auto",
+                                        // disabled ? "none" : "auto"
+                                    }}
+                                    onClick={() => {
+                                            startTimer()
+                                            setDisabledNoTask(true)
+                                            setPuaseFlagNotTask(true)
+                                        }
+                                    }
+                                > Start </button>
+
                                 <PomodoroButton
                                     title="Pause"
-                                    className={!startAnimation ? 'active' : undefined}
-                                    _callback={pauseTimer}
+                                    _callback={()=>{
+                                        pauseTimer()
+                                        setPuaseFlagNotTask(false)
+                                    }}
                                 />
                                 <PomodoroButton
                                     title="Reset"
-                                    className={!startAnimation ? 'active' : undefined}
-                                    _callback={resetTimer}
+                                    _callback={() => {
+                                        resetTimer(doingTask)
+                                        setDisabledNoTask(false)
+                                    }}
                                 />
                             </div>
                             
-                            <Settings /> 
-                        </Disabled>
+                        </Disabled> 
+                        <Settings disabled={disabled} disableNoTask={disabledNoTask}/> 
+                       
                     </>                  
                     
                      

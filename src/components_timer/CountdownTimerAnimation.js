@@ -23,7 +23,6 @@ const CountdownTimerAnimation = ({ keys, timerDuration, startAnimate,setFinishCy
             size={220}
             trailColor="#D3D3D3" //the gray color after the color is disappearing
             onComplete={ () => {
-                setFinishCycle(true);
                 resetTimer();
             }}
         >   

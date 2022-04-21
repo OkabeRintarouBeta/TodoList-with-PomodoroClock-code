@@ -37,11 +37,18 @@ const SetupContextProvider = (props) => {
         setStartAnimation(false)
     }
 
-    const resetTimer = () => {
-        setFinishCycle(true)
-        // console.log("In Context: finish Cycle: " + finishCycle)
-        setNewTimerKey(newTimerKey + 1)
-        pauseTimer() //pause the animation when the clock is refreshed
+    const resetTimer = (isDoingTask) => {
+        // console.log("isDoingTask: " + isDoingTask)
+        if(isDoingTask){
+            setNewTimerKey(newTimerKey + 1)
+        }
+        else{
+            setFinishCycle(true)
+            // console.log("In Context: finish Cycle: " + finishCycle)
+            setNewTimerKey(newTimerKey + 1)
+            pauseTimer() //pause the animation when the clock is refreshed
+        }
+        
     }
 
     const updateTimer = (newTimer) => {
@@ -55,7 +62,7 @@ const SetupContextProvider = (props) => {
             active: activeType
         })
         setTime(executing) //reset the promodoro value depending on the active state
-        console.log("executing: " + executing.active)
+        // console.log("executing: " + executing.active)
         pauseTimer()
     }
 

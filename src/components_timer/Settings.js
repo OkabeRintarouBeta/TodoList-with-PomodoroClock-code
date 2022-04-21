@@ -6,7 +6,7 @@ import "./PomodoroButton.css"
 {/*Setup initial pomodoro timer */}
 
 
-const Settings = () => {
+const Settings = ( {disabled, disableNoTask} ) => {
     const initState = {
         work: 25, //set initial time of work - 25min
         short: 5, //set initial time of short break - 5min
@@ -15,7 +15,7 @@ const Settings = () => {
     }
     
     const [ newTimer, setNewTimer ] = useState(initState)
-
+    
     const { updateTimer } = useContext(SetupPomodoroContext)
 
 
@@ -57,21 +57,42 @@ const Settings = () => {
         updateTimer(newTimer)
     }
 
-    return(
-        <div className="setting-container">
-            <form noValidate>
-                <div className="input-container">
-                        <label>Work time (min)</label>
-                        <input className="input" name="work" onChange={handleChange} defaultValue={newTimer.work}/>
-                        <label>Short Break (min)</label>
-                        <input className="input" name="short" onChange={handleChange} defaultValue={newTimer.short} />
-                        <label>Long Break (min)</label>
-                        <input className="input" name="long" onChange={handleChange} defaultValue={newTimer.long} />
-                </div> 
-                <PomodoroButton title="Set Timer" _callback={updateTimerHandler} />
-            </form>
-        </div>
-    )
+    // console.log("disableNotask: " + disableNoTask)
+    if (disabled || disableNoTask) {
+        return(
+            <div className="setting-container" style={{ opacity: 0.5, pointerEvents: "none" }} disabled>
+                <form noValidate>
+                    <div className="input-container">
+                            <label>Work time (min)</label>
+                            <input className="input" name="work" onChange={handleChange} defaultValue={newTimer.work}/>
+                            <label>Short Break (min)</label>
+                            <input className="input" name="short" onChange={handleChange} defaultValue={newTimer.short} />
+                            <label>Long Break (min)</label>
+                            <input className="input" name="long" onChange={handleChange} defaultValue={newTimer.long} />
+                    </div> 
+                    <PomodoroButton title="Set Timer" _callback={updateTimerHandler} />
+                </form>
+            </div>
+        )
+    } 
+    else{
+        return(
+            <div className="setting-container" disabled>
+                <form noValidate>
+                    <div className="input-container">
+                            <label>Work time (min)</label>
+                            <input className="input" name="work" onChange={handleChange} defaultValue={newTimer.work}/>
+                            <label>Short Break (min)</label>
+                            <input className="input" name="short" onChange={handleChange} defaultValue={newTimer.short} />
+                            <label>Long Break (min)</label>
+                            <input className="input" name="long" onChange={handleChange} defaultValue={newTimer.long} />
+                    </div> 
+                    <PomodoroButton title="Set Timer" _callback={updateTimerHandler} />
+                </form>
+            </div>
+        )
+    }
+    
 }
 
 

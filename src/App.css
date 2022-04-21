@@ -46,7 +46,7 @@
 
 .setting-button{
   height:70px;
-  width: 60px;
+  width: 80px;
   margin:auto 5px;
   background-color: #2e58af;
   border-radius: 15px;
@@ -83,20 +83,27 @@ button:active{
   border-radius:15px;
   font-size: 15px;
   font-weight: bold;
-  transition: border 1s,opacity 1s;
   background-color: #efbca7;
   outline: none;
   box-shadow: 0 1px #999;
-  transition:background-color 0.5s,transform 0.5s, opacity 1s;
+  /* transition:background-color 0.5s,transform 0.5s, opacity 1s; */
 }
 
-.pomodoro-button{
+.pomodoro-button {
   margin-bottom: 10px;
   display: flex;
 }
 
-.pomodoro-button-item button:active {
-  background-color: #f6a38a;
+.pomodoro-button-item-acitve button{
+  margin:5px 5px;
+  width: 110px;
+  height: 40px;
+  border-radius:15px;
+  font-size: 15px;
+  font-weight: bold;
+  outline: none;
+  box-shadow: 0 1px #999;
+  background-color: #f5754e;
 }
 
 .buttons-wrapper{
