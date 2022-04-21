@@ -11,7 +11,8 @@ const TaskDone=(props)=>{
     return(
 
     <Item key={taskDone.name}>
-        <div>{taskDone.name}</div>
+        <div
+            className="task-title">{taskDone.name}</div>
         <Stack
             direction="row"
             divider={<Divider orientation="vertical" flexItem />}
@@ -20,7 +21,7 @@ const TaskDone=(props)=>{
         >
 
             <SubItem>{taskDone.category}</SubItem>
-            <SubItem>{taskDone.totalTime} min</SubItem>
+            <SubItem>{taskDone.totalTime?taskDone.totalTime+" min":"Finished"} </SubItem>
             <SubItem>{taskDone.description}</SubItem>
         </Stack>
 

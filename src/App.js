@@ -18,8 +18,8 @@ import DraggableList from 'react-draggable-lists';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 
 import InputList from "./components/InputList";
 import TodoList from "./components/TodoList";
@@ -128,6 +128,8 @@ function App() {
     const [ showTimeRemain, setShowTimeRemain ] = useState(timeLeft);
     const [ doingTask, setDoingTask ] = useState(false)
 
+
+
     //------------Pomodoro Context-----------------------
     const { 
         startTimer,
@@ -162,15 +164,15 @@ function App() {
         if(finishCycle){
             setFinishCycle(false)
             setTimeLeft(timeLeft - 1)
-            console.log("useEffect -- finishCycle: " + finishCycle)
-            console.log("useEffect -- timeLeft: " + timeLeft)
+            // console.log("useEffect -- finishCycle: " + finishCycle)
+            // console.log("useEffect -- timeLeft: " + timeLeft)
         }
     },[finishCycle])
 
     useEffect(()=> {
     if(finishCycle && timeLeft === 1 && nextTask){
-        console.log("useEffect -- finishCycle 2: " + finishCycle)
-        console.log("useEffect -- timeLeft 2: " + timeLeft)
+        // console.log("useEffect -- finishCycle 2: " + finishCycle)
+        // console.log("useEffect -- timeLeft 2: " + timeLeft)
         setDoingTask(false);
         setFinishCycle(false)
         setNextTask('');
@@ -202,7 +204,7 @@ function App() {
     const displayTaskList = (items ,order) => {
         if (items.length===0){
             return (
-                <div>Nothing done</div>
+                <div className="empty">Nothing done</div>
             )
         }
         // console.log(items)
@@ -213,8 +215,10 @@ function App() {
         else if (order==='desc'){
             groupBy(items,'time',"desc");
         }
+
+
         return items.map((item,idx) =>
-            <div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",width:"500px"}}>
+            <div style={{display:"flex",flexWrap:"wrap",flexDirection:"row",justifyContent:"space-between",width:"600px"}}>
                 <TodoList
                     name={item.name}
                     description={item.description}
@@ -224,6 +228,7 @@ function App() {
                     index={idx}
                 />
                 <button
+                    className="setting-button"
                     style={{marginLeft:"20px"}}
                     onClick={()=>{
                     if(nextTask===''){
@@ -231,6 +236,8 @@ function App() {
                         setTimeLeft(item.time);
                         removeTask(item.name,3);
                     }else{
+                        // uncompleteAlert=true;
+                        alert('Current Task Not finished!')
                         console.log("there are still unfinished task")
                     }
                 }}>Do next</button>
@@ -240,7 +247,7 @@ function App() {
     const displayTaskDone=(items,order)=>{
         if (items.length===0){
             return (
-                <div>Nothing done</div>
+                <div className="empty">Nothing done</div>
             )
         }
         if (order==='asc'){
@@ -250,6 +257,7 @@ function App() {
         else if (order==='desc'){
             groupBy(items,'time',"desc");
         }
+        // console.log(items);
         return items.map((item,idx) =>
             <div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",width:"500px"}}>
                 <TaskDone
@@ -272,7 +280,7 @@ function App() {
             //save the completed task to storage and taskDone list
             setTaskDone((previousList)=>{
                 const updatedList=[
-                    task1, ...previousList
+                    task1[0], ...previousList
                 ]
                 localStorage.setItem('finished-task-list',JSON.stringify(updatedList))
                 return updatedList;
@@ -352,12 +360,9 @@ function App() {
                     >
                         <AddCircleOutlineIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Todo List
+                    <Typography variant="h6" noWrap component="div" sx={{fontFamily:"impact",fontSize:"30px"}}>
+                        Todo List with Pomodoro Clock
                     </Typography>
-
-
-
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
@@ -370,11 +375,12 @@ function App() {
                 <InputList isOpen={open} setTodoItems={setTaskList}/>
             </Drawer>
             <Stack
+                className="todoList-container"
                 component="main"
                 sx={{flexGrow: 1, bgcolor: 'background.default', p: 3 }}
             >
                 <Toolbar />
-                <Box sx={{ width: '50%'}}>
+                <Box sx={{ width: '70%'}}>
                     <h3>Task Now</h3>
                     <div style={{display:"flex",justifyContent:"space-between",minWidth:"500px"}}>
                         <TaskNow
@@ -385,7 +391,7 @@ function App() {
                             spentTime={usedTime}
                         />
                         {/*/------------------Pomodoro start------------------*/}
-                        <button style={{width:"50px",visibility:nextTask===''?"hidden":"visible"}}
+                        <button className="setting-button primary" style={{visibility:nextTask===''?"hidden":"visible"}}
                             onClick={()=>{
                                 if(!doingTask){ //default: false
                                     setTimeLeft(timeLeft)
@@ -396,7 +402,7 @@ function App() {
                             }}
                         >Start</button>
                         {/*/------------------Pomodoro start------------------*/}
-                        <button style={{width:"50px",visibility:nextTask===''?"hidden":"visible"}}
+                        <button className="setting-button secondary" style={{width:"50px",visibility:nextTask===''?"hidden":"visible"}}
                             onClick={()=>{
                                 resetTimer();
                                 setDoingTask(false);
@@ -413,7 +419,7 @@ function App() {
                     </div>
                 </Box>
                 <Divider sx={{margin:"30px"}}/>
-                <Box sx={{ width: '50%'}}>
+                <Box sx={{ width: '70%'}}>
                     <Stack sx={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
                         <h3>Task To Do</h3>
                         <ButtonGroup disableElevation variant="contained" sx={{width:"80px",height:"30px",justifySelf:"flex-end"}}>
@@ -422,19 +428,18 @@ function App() {
                         </ButtonGroup>
                     </Stack>
 
-
                     <div>
                         {displayTaskList(taskList,sortList)}
                     </div>
                 </Box>
                 <Divider sx={{margin:"30px"}}/>
-                <Box sx={{ width: '50%'}}>
+                <Box sx={{ width: '70%'}}>
                     <div>
                         <h3>Task Done</h3>
                         {displayTaskDone(taskDone,'')}
                         {/*A button that clears all finished task in local storage*/}
                         <Button variant="outlined" startIcon={<DeleteIcon />}
-                                sx={{visibility:taskDone.length===0?"hidden":"visible", margin:'10px auto'}}
+                                sx={{visibility:taskDone.length===0?"hidden":"visible", margin:'10px 0 10px 90px'}}
                                 onClick={()=>{
                                     localStorage.setItem('finished-task-list',[]);
                                     setTaskDone([])
@@ -448,14 +453,14 @@ function App() {
             <Divider orientation='vertical' flexItem={true}/>
             <Box 
                 component="main"
-                className='pomodoro' sx={{display:'flex',width:'50%', margin:'64px 64px'}}> 
+                className='pomodoro' sx={{display:'flex',width:'70%', margin:'64px 64px'}}>
                 {/* 64px is the same height as the tool bar */}
-                <div>
+                <div className='pomodoro-container'>
                     <h3>Pomodoro</h3>
                     <>
                         <div>
-                            <ul className="pomodoro-button">
-                                <li>
+                            <div className="pomodoro-button" >
+                                <div className="pomodoro-button-item">
                                     <PomodoroButton 
                                         title="Work"
                                         activeClass={executing.active === "work" ? "active-button" : undefined}
@@ -464,8 +469,8 @@ function App() {
                                             resetTimer()
                                         }}
                                     />
-                                </li>
-                                <li>
+                                </div>
+                                <div className="pomodoro-button-item">
                                     <PomodoroButton 
                                         title="Short Break"
                                         activeClass={executing.active === "short" ? "active-button" : undefined}
@@ -474,8 +479,8 @@ function App() {
                                             resetTimer()
                                         }}
                                     />
-                                </li>
-                                <li>
+                                </div>
+                                <div className="pomodoro-button-item">
                                     <PomodoroButton 
                                         title="Long Break"
                                         activeClass={executing.active === "long" ? "active-button" : undefined}
@@ -484,8 +489,8 @@ function App() {
                                             resetTimer()
                                         }}
                                     />
-                                </li>
-                            </ul>
+                                </div>
+                            </div>
                         </div>
                         
 

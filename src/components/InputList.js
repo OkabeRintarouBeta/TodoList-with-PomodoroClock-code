@@ -48,7 +48,7 @@ const InputList=(props)=>{
      @ see https://github.com/UMSI579/todo/blob/step19/src/components/InputGroup.js
      */
     const AddTask=()=>{
-        console.log(taskName,taskTime,taskDescription,taskCategory)
+        // console.log(taskName,taskTime,taskDescription,taskCategory)
         if(taskName && taskTime){
             setTodoItems((previousList)=>{
                 const updatedList=[
@@ -65,6 +65,9 @@ const InputList=(props)=>{
                 return updatedList;
             })
             // console.log("tasktime: " + taskTime * executing.work)
+        }
+        else{
+            alert("Check if you have entered a task name/task time!");
         }
 
         setTaskName('');

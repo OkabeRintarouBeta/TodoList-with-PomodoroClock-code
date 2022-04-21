@@ -20,7 +20,7 @@ const TaskNow=(props)=>{
 
     if (!task){
         return (
-            <div>
+            <div className="empty">
                 Nothing to do now
             </div>
         )
@@ -28,7 +28,7 @@ const TaskNow=(props)=>{
     else return (
         <div>
             <Item>
-                <div>{task.name}</div>
+                <div className="task-title">{task.name}</div>
                 <Stack
                     direction="row"
                     divider={<Divider orientation="vertical" flexItem />}
@@ -38,11 +38,11 @@ const TaskNow=(props)=>{
                     <SubItem>{task.category}</SubItem>
                     <SubItem>{toTomato(timeRemain)}</SubItem>
                     <SubItem>{task.description}</SubItem>
-                    <div>Time Left: {
-                        // timeRemain*executing.work
-                        isDoingTask && !finishCycle ? showTimeRemain : timeRemain*executing.work
-
-                    } minutes</div>
+                    <div>Time Left:
+                        <p style={{margin:"5px auto"}}>{// timeRemain*executing.work
+                            isDoingTask && !finishCycle ? showTimeRemain : timeRemain*executing.work
+                        } minutes</p>
+                        </div>
                 </Stack>
             </Item>
 
