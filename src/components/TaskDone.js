@@ -6,7 +6,6 @@ import {toTomato} from "../utils";
 import { SetupPomodoroContext } from "../context/SetupPomodoroContext";
 
 const TaskDone=(props)=>{
-    const { executing } = useContext(SetupPomodoroContext)
 
     const {taskDone,dropTask}=props;
     return(

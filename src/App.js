@@ -220,7 +220,7 @@ function App() {
                     description={item.description}
                     category={item.category}
                     timetodo={item.time}
-                    remove={() => removeTask(item.name,2)}
+                    remove={() => removeTask(item.name, item.time, 2)}
                     index={idx}
                 />
                 <button
@@ -264,7 +264,7 @@ function App() {
     // 2. If the button is `done`, then move the task to finished-task-list
     // 3. If the button is `do next`, then NOT move the task to finished-task-list
 
-    const removeTask=(itemName,option)=>{
+    const removeTask=(itemName, itemTime, option)=>{
         const selected=[itemName]
         const task1=taskList.filter(({name}) => selected.includes(name));
         // console.log("task1",task1)
@@ -277,6 +277,8 @@ function App() {
                 localStorage.setItem('finished-task-list',JSON.stringify(updatedList))
                 return updatedList;
             })
+            console.log("item Time " + itemTime)
+            console.log("item Time2 " + task1.time)
         }
         else if (option===3){
             // save the current todo task to local storage
