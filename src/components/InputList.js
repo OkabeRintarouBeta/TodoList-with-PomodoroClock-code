@@ -48,22 +48,32 @@ const InputList=(props)=>{
      @ see https://github.com/UMSI579/todo/blob/step19/src/components/InputGroup.js
      */
     const AddTask=()=>{
+        const taskList=JSON.parse(localStorage.getItem('task-list'));
+        let taskname_list=[]
+        for (const item of taskList){
+            taskname_list.push(item['name']);
+        }
         // console.log(taskName,taskTime,taskDescription,taskCategory)
         if(taskName && taskTime){
-            setTodoItems((previousList)=>{
-                const updatedList=[
-                    {
-                        name:taskName,
-                        description:taskDescription,
-                        time:taskTime,
-                        totalTime:taskTime * executing.work,
-                        category:taskCategory ? taskCategory : "general",
-                    },
-                    ...previousList
-                ]
-                localStorage.setItem('task-list',JSON.stringify(updatedList))
-                return updatedList;
-            })
+            if (taskname_list.indexOf(taskName)!==-1 ){
+                alert('You already have that task');
+            }
+            else{
+                setTodoItems((previousList)=>{
+                    const updatedList=[
+                        {
+                            name:taskName,
+                            description:taskDescription,
+                            time:taskTime,
+                            totalTime:taskTime * executing.work,
+                            category:taskCategory ? taskCategory : "general",
+                        },
+                        ...previousList
+                    ]
+                    localStorage.setItem('task-list',JSON.stringify(updatedList))
+                    return updatedList;
+                })
+            }
             // console.log("tasktime: " + taskTime * executing.work)
         }
         else{
