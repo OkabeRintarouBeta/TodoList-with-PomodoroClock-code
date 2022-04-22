@@ -41,7 +41,7 @@ const InputList=(props)=>{
     const [taskName,setTaskName]=useState('');
     const [taskDescription,setTaskDescription]=useState('');
     const [taskTime,setTaskTime]=useState(0);
-    const [taskCategory, setTaskCategory]=useState('');
+    const [taskCategory, setTaskCategory]=useState('general');
 
     const { executing } = useContext(SetupPomodoroContext)
     /*
@@ -57,7 +57,7 @@ const InputList=(props)=>{
                         description:taskDescription,
                         time:taskTime,
                         totalTime:taskTime * executing.work,
-                        category:taskCategory
+                        category:taskCategory ? taskCategory : "general",
                     },
                     ...previousList
                 ]
@@ -113,10 +113,10 @@ const InputList=(props)=>{
                             <Select
                                 labelId="demo-simple-select-filled-label"
                                 id="demo-simple-select-filled"
-                                value={taskCategory}
+                                value={taskCategory ? taskCategory : "general"}
                                 onChange={(e)=>setTaskCategory(e.target.value)}
                             >
-                                <MenuItem value="">
+                                <MenuItem value="general">
                                     <em>None</em>
                                 </MenuItem>
                                 <MenuItem value="study">Study </MenuItem>
@@ -143,7 +143,7 @@ const InputList=(props)=>{
                                 defaultValue={1}
                                 max={6}
                                 value={taskTime}
-                                onChange={(newTaskTime) => {
+                                onChange={(event, newTaskTime) => {
                                     setTaskTime(newTaskTime);
                                 }}
                                 getLabelText={(value) => `${value} Heart${value !== 1 ? 's' : ''}`}

@@ -42,12 +42,14 @@
 
 .task-title{
   font-size:20px;
+  margin-bottom: 5px;
 }
 
 .setting-button{
   height:70px;
   width: 80px;
   margin:auto 5px;
+  padding: 0 10px;
   background-color: #2e58af;
   border-radius: 15px;
   color: white;
@@ -77,7 +79,7 @@ button:active{
 }
 
 .button-under-text{
-  margin: 8px 0;
+  margin: 0 0 8px 0;
 }
 
 .pomodoro-button-item button{

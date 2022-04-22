@@ -22,7 +22,7 @@ import ListItem from '@mui/material/ListItem';
 import DraggableList from 'react-draggable-lists';
 
 import InputList from "./components/InputList";
-import TodoList from "./components/TodoList";
+import TodoList, { Item } from "./components/TodoList";
 import {groupBy} from "./utils";
 import TaskNow from "./components/TaskNow";
 import TaskDone from "./components/TaskDone"
@@ -125,7 +125,9 @@ function App() {
     const [nextTask,setNextTask]=useState(defaultCurrentTask);
     const [timeLeft,setTimeLeft]=useState(0);
     const [taskDone,setTaskDone]=useState(defaultFinishedTasks);
-    const [ showTimeRemain, setShowTimeRemain ] = useState(timeLeft);
+
+    const [ spentTime, setSpentTime] = useState(0)
+    const [ showTimeRemain, setShowTimeRemain ] = useState(0);
     const [ doingTask, setDoingTask ] = useState(false);
     const [ disabled, setDisabled ] = useState(false);
     const [ disabledNoTask, setDisabledNoTask ] = useState(false);
@@ -148,7 +150,8 @@ function App() {
         usedTime, //secounds
         finishCycle, // finish one clock flag
         setFinishCycle,
-        startTimerTodoList
+        startTimerTodoList,
+        setTaskNowTimer
       } = useContext(SetupPomodoroContext)
 
     useEffect(()=>{updateTimer(executing)}, [executing, startAnimation])
@@ -159,9 +162,10 @@ function App() {
         // console.log("usedTime: " + usedTime); //seconds
         // console.log("timeLeft tomato num : " + timeLeft); 
         // console.log("finishCycle in App.js: " + finishCycle)
-
-        const remainingTimeTodo = Math.floor(timeLeft* executing.work - usedTime / 60)
-        setShowTimeRemain(remainingTimeTodo)
+        if(doingTask){
+            const remainingTimeTodo = Math.floor(timeLeft*executing.work - usedTime / 60)
+            setShowTimeRemain(remainingTimeTodo)
+        }
     }
     useEffect(()=>{handleUsedTime()}, [usedTime])
 
@@ -169,8 +173,6 @@ function App() {
         if(finishCycle){
             setFinishCycle(false)
             setTimeLeft(timeLeft - 1)
-            // console.log("useEffect -- finishCycle: " + finishCycle)
-            // console.log("useEffect -- timeLeft: " + timeLeft)
             setDisabled(false)
         }
     },[finishCycle])
@@ -244,18 +246,19 @@ function App() {
 
 
         return items.map((item,idx) =>
-            <div style={{display:"flex",flexWrap:"wrap",flexDirection:"row",justifyContent:"space-between",width:"600px"}}>
+            <div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",width:"600px"}}>
                 <TodoList
                     name={item.name}
                     description={item.description}
                     category={item.category}
                     timetodo={item.time}
-                    remove={() => removeTask(item.name, item.time, 2)}
+                    totalTime={item.totalTime}
+                    remove={() => removeTask(item.name, 2)}
                     index={idx}
                 />
                 <button
                     className="setting-button"
-                    style={{marginLeft:"20px"}}
+                    style={{marginLeft:"5px"}}
                     onClick={()=>{
                     if(nextTask===''){
                         setNextTask(item);
@@ -266,7 +269,9 @@ function App() {
                         alert('Current Task Not finished!')
                         console.log("there are still unfinished task")
                     }
-                }}>Do next</button>
+                    setShowTimeRemain(item.totalTime)
+                    setTaskNowTimer(item.totalTime / item.time)
+                }}>Do Next</button>
             </div>
         )}
 
@@ -289,6 +294,7 @@ function App() {
                 <TaskDone
                     taskDone={item}
                     dropTask={()=>dropTask(item.name)}
+                    usedTime={timeLeft * item.totalTime/item.time}
                 />
             </div>
         )
@@ -298,7 +304,7 @@ function App() {
     // 2. If the button is `done`, then move the task to finished-task-list
     // 3. If the button is `do next`, then NOT move the task to finished-task-list
 
-    const removeTask=(itemName, itemTime, option)=>{
+    const removeTask=(itemName, option)=>{
         const selected=[itemName]
         const task1=taskList.filter(({name}) => selected.includes(name));
         // console.log("task1",task1)
@@ -311,8 +317,8 @@ function App() {
                 localStorage.setItem('finished-task-list',JSON.stringify(updatedList))
                 return updatedList;
             })
-            console.log("item Time " + itemTime)
-            console.log("item Time2 " + task1.time)
+            // console.log("item Time " + itemTime)
+            // console.log("item Time2 " + task1.time)
         }
         else if (option===3){
             // save the current todo task to local storage
@@ -387,15 +393,14 @@ function App() {
                 sx={{flexGrow: 1, bgcolor: 'background.default', p: 3 }}
             >
                 <Toolbar />
-                <Box sx={{ width: '70%'}}>
+                <Box sx={{ width: '800px'}}>
                     <h3>Task Now</h3>
                     <div style={{display:"flex",justifyContent:"space-between",minWidth:"500px"}}>
                         <TaskNow
                             task={nextTask}
                             timeRemain={timeLeft}
                             showTimeRemain={showTimeRemain}
-                            isDoingTask={doingTask}
-                            spentTime={usedTime}
+                            isDoingTask={doingTask} //boolean
                         />
                         {/*/------------------Pomodoro start------------------*/}
                         <button className="setting-button primary" 
@@ -408,7 +413,8 @@ function App() {
                                 if(!doingTask){ //default: false
                                     setTimeLeft(timeLeft)
                                     setDoingTask(true);
-                                } 
+                                }
+                                setTaskNowTimer(nextTask.totalTime / nextTask.time) 
                                 startTimerTodoList();
                                 handleUsedTime();
                                 setDisabled(true); //when start a task, disable settings
@@ -440,8 +446,8 @@ function App() {
 
                         <button className="setting-button secondary" style={{width:"60px",visibility:nextTask===''?"hidden":"visible"}}
                             onClick={()=>{
-                                resetTimer();
                                 setDoingTask(false);
+                                resetTimer(doingTask);
                                 setTaskDone((previousList)=>{
                                     const updatedList= [nextTask,...previousList];
                                     localStorage.setItem('finished-task-list',JSON.stringify(updatedList))
@@ -451,18 +457,23 @@ function App() {
                                 
                                 setNextTask('');
                                 setDisabled(false);
+                                setPauseFlag(false);
+                                setSpentTime(timeLeft)
                             }}
                         >Finish Ahead</button>
                     </div>
                 </Box>
                 <Divider sx={{margin:"30px"}}/>
-                <Box sx={{ width: '70%'}}>
-                    <Stack sx={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:"center"}}>
+                <Box sx={{ width: '800px'}}>
+                    <Stack sx={{display:'flex',flexDirection:'row',flexWrap:"wrap", gap:"10px",alignItems:"center"}}>
                         <h3>Task To Do</h3>
-                        <ButtonGroup disableElevation variant="contained" sx={{width:"80px",height:"30px",justifySelf:"flex-end"}}>
+                        <div style={{paddingLeft:"170px",visibility:taskList.length===0?"hidden":"visible"}}>Sort tasks by:</div>
+                        <ButtonGroup disableElevation variant="contained" sx={{width:"100px",height:"30px",justifySelf:"center"}}>
                             <Button onClick={()=>{setSortList('asc')} } sx={{visibility:taskList.length===0?"hidden":"visible"}}>Asc</Button>
                             <Button onClick={()=>{setSortList('desc')}} sx={{visibility:taskList.length===0?"hidden":"visible"}}>Desc</Button>
                         </ButtonGroup>
+                        <div style={{visibility:taskList.length===0?"hidden":"visible"}}>total time</div>
+
                     </Stack>
 
                     <div>
@@ -539,6 +550,7 @@ function App() {
                                 keys={newTimerKey}
                                 timerDuration={pomodoro}
                                 startAnimate={startAnimation}
+                                isDoingTask={doingTask}
                             >
                                 {children}
                             </CountdownTimerAnimation>
@@ -570,8 +582,16 @@ function App() {
                                 <PomodoroButton
                                     title="Reset"
                                     _callback={() => {
-                                        resetTimer(doingTask)
-                                        setDisabledNoTask(false)
+                                        if(disabledNoTask){ //useing the clock when not doing a task
+                                            // console.log('setDisabledNoTask: ' + disabledNoTask)
+                                            resetTimer(doingTask)
+                                            setDisabledNoTask(false)
+                                            setPuaseFlagNotTask(false)
+                                        }
+                                        else{
+                                            resetTimer(doingTask)
+                                            setDisabledNoTask(false)
+                                        }
                                     }}
                                 />
                             </div>

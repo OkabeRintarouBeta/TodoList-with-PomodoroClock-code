@@ -1,4 +1,4 @@
-import {Item,SubItem} from './TodoList'
+import {Item,SubItem,Label} from './TodoList'
 import {toTomato} from "../utils";
 import * as React from 'react';
 
@@ -33,16 +33,25 @@ const TaskNow=(props)=>{
                     direction="row"
                     divider={<Divider orientation="vertical" flexItem />}
                     spacing={3}
-                    sx={{display:"flex",justifyContent:"center"}}
+                    sx={{display:"flex",justifyContent:"center",fontWeight:"bold"}}
                 >
-                    <SubItem>{task.category}</SubItem>
-                    <SubItem>{toTomato(timeRemain)}</SubItem>
+                    <Label>Category</Label>
+                    <Label>Description</Label>
+                    <Label>Left Tomatos</Label>
+                    <Label>Time Left</Label>
+                </Stack>
+
+                <Stack
+                    direction="row"
+                    divider={<Divider orientation="vertical" flexItem />}
+                    spacing={3}
+                    sx={{display:"flex",justifyContent:"center", padding:"10px"}}
+                >
+                    <SubItem >{task.category}</SubItem>
                     <SubItem>{task.description}</SubItem>
-                    <div>Time Left:
-                        <p style={{margin:"5px auto"}}>{// timeRemain*executing.work
-                            isDoingTask && !finishCycle ? showTimeRemain : timeRemain*executing.work
-                        } minutes</p>
-                        </div>
+                    <SubItem>{toTomato(timeRemain)}</SubItem>
+                    <SubItem>{showTimeRemain} min</SubItem>
+                    
                 </Stack>
             </Item>
 
