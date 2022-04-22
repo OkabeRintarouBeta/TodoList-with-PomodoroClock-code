@@ -101,7 +101,8 @@ const SetupContextProvider = (props) => {
         return 0
     }
 
-    const children = ({ remainingTime }) => {   
+    const children = ({ remainingTime }) => {
+        console.log("time: " + remainingTime)   
         const minutes = Math.floor(remainingTime / 60)
         const seconds = remainingTime % 60
         //console.log(usedTime)

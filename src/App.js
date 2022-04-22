@@ -513,7 +513,7 @@ function App() {
                                         title="Work"
                                         _callback={(e) => {
                                             setCurrentTimer("work")
-                                            resetTimer()
+                                            resetTimer(doingTask)
                                             setDisabledNoTask(false)
                                             setPuaseFlagNotTask(false)
                                         }}
@@ -524,7 +524,7 @@ function App() {
                                         title="Short Break"
                                         _callback={() => {
                                             setCurrentTimer("short")
-                                            resetTimer()
+                                            resetTimer(doingTask)
                                             setDisabledNoTask(false)
                                             setPuaseFlagNotTask(false)
                                         }}
@@ -535,7 +535,7 @@ function App() {
                                         title="Long Break"
                                         _callback={() => {
                                             setCurrentTimer("long")
-                                            resetTimer()
+                                            resetTimer(doingTask)
                                             setDisabledNoTask(false)
                                             setPuaseFlagNotTask(false)
                                         }}

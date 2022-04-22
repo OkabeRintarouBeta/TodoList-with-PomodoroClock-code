@@ -18,11 +18,13 @@ const CountdownTimerAnimation = ({ keys, timerDuration, startAnimate, isDoingTas
             key={keys}
             isPlaying={startAnimate}
             duration={ timerDuration * 60 } // sec * 60 => minutes
-            colors={"#A30000"}
-            strokeWidth={15}
+            colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+            colorsTime={[0.7*timerDuration * 60, 0.5*timerDuration * 60, 0.2*timerDuration * 60, 0]}
+            strokeWidth={20}
             size={220}
             trailColor="#D3D3D3" //the gray color after the color is disappearing
             onComplete={ () => {
+                // finishCycleHandler();
                 resetTimer(isDoingTask);
             }}
         >   
