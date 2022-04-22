@@ -10,14 +10,14 @@ const SetupContextProvider = (props) => {
     // const [ newTimerKey, setNewTimerKey ] =useState(0);
 
     //default
-    
+
     const initState = {
         work: 25, //set initial time of work - 25min
         short: 5, //set initial time of short break - 5min
         long: 30, //set initial time of long break - 30min
         active: 'work' //set 
     }
-    const [ pomodoro, setPomodoro ] = useState(0); 
+    const [ pomodoro, setPomodoro ] = useState(0);
     const [ executing, setExecuting ] = useState(initState);
     const [ startAnimation, setStartAnimation ] = useState(false);
     const [ newTimerKey, setNewTimerKey ] =useState(0);
@@ -37,17 +37,21 @@ const SetupContextProvider = (props) => {
         setStartAnimation(false)
     }
 
-    const resetTimer = (isDoingTask) => {
-        // console.log("isDoingTask: " + isDoingTask)
-        if(isDoingTask){
+    const resetTimer = (isDoingTask, startFromClock) => {
+        console.log("isDoingTask: " + isDoingTask)
+        console.log("startfromclock: " + startFromClock)
+        if(isDoingTask && !startFromClock){
             setFinishCycle(true)
             // console.log("In Context: finish Cycle: " + finishCycle)
+            setNewTimerKey(newTimerKey + 1)
         }
-        setNewTimerKey(newTimerKey + 1)
+        else if(startFromClock)
+        {
+            setNewTimerKey(newTimerKey + 1)
+        }
         pauseTimer() //pause the animation when the clock is refreshed
-        
+
     }
-        
 
     const updateTimer = (newTimer) => {
         setExecuting(newTimer) //object, "newTimer" from SetPomodoro
@@ -57,7 +61,8 @@ const SetupContextProvider = (props) => {
     function setTaskNowTimer(time){ //either "work", "short" or "long"
         updateTimer({
             ...executing,
-            work: time
+            work: time,
+            active: "work"
         })
     }
 
@@ -67,6 +72,7 @@ const SetupContextProvider = (props) => {
             active: activeType
         })
         setTime(executing) //reset the promodoro value depending on the active state
+        setNewTimerKey(newTimerKey+1);
         pauseTimer()
     }
 
@@ -102,7 +108,7 @@ const SetupContextProvider = (props) => {
     }
 
     const children = ({ remainingTime }) => {
-        console.log("time: " + remainingTime)   
+        // console.log("time: " + remainingTime)
         const minutes = Math.floor(remainingTime / 60)
         const seconds = remainingTime % 60
         //console.log(usedTime)
@@ -113,7 +119,7 @@ const SetupContextProvider = (props) => {
     }
 
     return(
-        <SetupPomodoroContext.Provider 
+        <SetupPomodoroContext.Provider
             value={{
                 startTimer,
                 pauseTimer,
@@ -127,12 +133,12 @@ const SetupContextProvider = (props) => {
                 newTimerKey,
                 usedTime,
                 usedTimeHandler,
-                
+
                 finishCycle,
                 setFinishCycle,
                 startTimerTodoList,
                 setTaskNowTimer
-                
+
                 // setTime,
                 // setCurrentTimer,
                 // setExecuting,

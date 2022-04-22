@@ -50,9 +50,13 @@ const InputList=(props)=>{
     const AddTask=()=>{
         const taskList=JSON.parse(localStorage.getItem('task-list'));
         let taskname_list=[]
-        for (const item of taskList){
-            taskname_list.push(item['name']);
+
+        if (taskList){
+            for (const item of taskList){
+                taskname_list.push(item['name']);
+            }
         }
+
         // console.log(taskName,taskTime,taskDescription,taskCategory)
         if(taskName && taskTime){
             if (taskname_list.indexOf(taskName)!==-1 ){
