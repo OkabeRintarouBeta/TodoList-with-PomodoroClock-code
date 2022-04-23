@@ -132,7 +132,7 @@ function App() {
     const [ disabled, setDisabled ] = useState(false);
     const [ disabledNoTask, setDisabledNoTask ] = useState(false);
     const [ pauseFlag, setPauseFlag ] = useState(false)
-    const [ puaseFlagNotTask, setPuaseFlagNotTask ] = useState(false)
+    const [ pauseFlagNotTask, setPauseFlagNotTask ] = useState(false)
 
 
     //------------Pomodoro Context-----------------------
@@ -514,7 +514,7 @@ function App() {
                                             _callback={(e) => {
                                                 setCurrentTimer("work")
                                                 setDisabledNoTask(false)
-                                                setPuaseFlagNotTask(false)
+                                                setPauseFlagNotTask(false)
                                                 setStartFromClock(true)
                                             }}
                                         />
@@ -525,7 +525,7 @@ function App() {
                                             _callback={() => {
                                                 setCurrentTimer("short")
                                                 setDisabledNoTask(false)
-                                                setPuaseFlagNotTask(false)
+                                                setPauseFlagNotTask(false)
                                                 setStartFromClock(true)
                                             }}
                                         />
@@ -536,7 +536,7 @@ function App() {
                                             _callback={() => {
                                                 setCurrentTimer("long")
                                                 setDisabledNoTask(false)
-                                                setPuaseFlagNotTask(false)
+                                                setPauseFlagNotTask(false)
                                                 setStartFromClock(true)
                                             }}
                                         />
@@ -551,6 +551,9 @@ function App() {
                                     timerDuration={pomodoro}
                                     startAnimate={startAnimation}
                                     isDoingTask={doingTask}
+                                    setDisabledNoTask = {setDisabledNoTask}
+                                    setPauseFlagNotTask = {setPauseFlagNotTask}
+                                    setStartFromClock = { setStartFromClock}
                                 >
                                     {children}
                                 </CountdownTimerAnimation>
@@ -560,14 +563,14 @@ function App() {
                                 <div className='buttons-wrapper'>
                                     <button className="setting-button primary"
                                             style={{
-                                                opacity: puaseFlagNotTask ? 0.3 : 1,
-                                                pointerEvents: puaseFlagNotTask ? "none" : "auto",
+                                                opacity: pauseFlagNotTask ? 0.3 : 1,
+                                                pointerEvents: pauseFlagNotTask ? "none" : "auto",
                                                 // disabled ? "none" : "auto"
                                             }}
                                             onClick={() => {
                                                 startTimer()
                                                 setDisabledNoTask(true)
-                                                setPuaseFlagNotTask(true)
+                                                setPauseFlagNotTask(true)
                                                 setStartFromClock(true)
                                             }
                                             }
@@ -577,7 +580,7 @@ function App() {
                                         title="Pause"
                                         _callback={()=>{
                                             pauseTimer()
-                                            setPuaseFlagNotTask(false)
+                                            setPauseFlagNotTask(false)
                                         }}
                                     />
                                     <PomodoroButton
@@ -587,7 +590,7 @@ function App() {
                                                 // console.log('setDisabledNoTask: ' + disabledNoTask)
                                                 resetTimer(doingTask, startFromClock)
                                                 setDisabledNoTask(false)
-                                                setPuaseFlagNotTask(false)
+                                                setPauseFlagNotTask(false)
                                             }
                                             else{
                                                 resetTimer(doingTask, startFromClock)
